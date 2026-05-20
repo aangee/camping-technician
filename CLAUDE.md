@@ -1,6 +1,6 @@
 # CLAUDE.md — Technician Camping Cottet
 
-**Chemin :** `L:/CORE/labs/Camping_Cottet_2026/Apps/camping-cottet-technician-app/`
+**Chemin :** `L:/CORE/labs/Camping_Cottet_2026/Apps/app-technician/`
 **Stack :** Vite 8 + React 19 + Supabase + Vitest
 **NSM project_id :** `p-mp9r26cnpgp`
 
