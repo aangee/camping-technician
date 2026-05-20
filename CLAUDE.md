@@ -11,7 +11,7 @@ PWA technicien — logger les interventions d'entretien (tonte / piscine / haies
 ## Position dans la suite
 
 Consommateur du studio admin (cf. `Apps/CLAUDE.md`).
-- **Données spatiales** (zones) : seedées dans Supabase par `Plan_Admin/tools/seed_supabase_zones.mjs` via `npm run sync:technician`. Mapping `config.local_id` → `zone.uuid`.
+- **Données spatiales** (zones) : seedées dans Supabase par `app-admin/tools/seed_supabase_zones.mjs` via `npm run sync:technician`. Mapping `config.local_id` → `zone.uuid`.
 - **Données transactionnelles** (`interventions`, `alertes`) : écrites depuis cette app directement vers Supabase.
 - **Données métier** (`config`, `meteo_cache`) : Supabase, gérées hors-studio.
 
@@ -56,7 +56,7 @@ RLS désactivé en prototypage (policies `allow_all_*`).
 
 ## Build & deploy
 
-- `vite.config.js` : `base: '/camping-cottet-technician-app/'`, plugin PWA autoUpdate
+- `vite.config.js` : `base: '/camping-cottet-technician-app/'` → ⚠️ **à mettre à jour en `/camping-technician/`** avant prochain déploiement (repo renommé 2026-05-20)
 - Pas de workflow GitHub Actions encore (à ajouter)
 
 ## Scripts npm
