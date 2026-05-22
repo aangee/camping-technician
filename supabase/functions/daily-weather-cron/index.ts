@@ -4,7 +4,8 @@
 import { serve } from "https://deno.land/std@0.208.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
-const OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
+const OPEN_METEO_URL  = "https://api.open-meteo.com/v1/forecast"
+const FETCH_TIMEOUT_MS = 30_000
 
 serve(async (req: Request) => {
   // Vérification de l'autorisation (service_role_key ou CRON_SECRET)
@@ -37,27 +38,56 @@ serve(async (req: Request) => {
 
     const coords = (cfg.coordinates as { lat: number; lon: number }) ?? { lat: 45.92, lon: 5.90 }
 
-    // Récupérer 30 jours de météo depuis Open-Meteo
-    const url = new URL(OPEN_METEO_URL)
-    url.searchParams.set('latitude',   String(coords.lat))
-    url.searchParams.set('longitude',  String(coords.lon))
-    url.searchParams.set('daily',      'temperature_2m_max,temperature_2m_min,precipitation_sum')
-    url.searchParams.set('past_days',  '30')
-    url.searchParams.set('forecast_days', '1')
-    url.searchParams.set('timezone',   'Europe/Paris')
+    // Guard idempotence : skip le fetch si meteo_cache a déjà une entrée pour aujourd'hui
+    const today = new Date().toISOString().split('T')[0]
+    const { data: existing } = await supabase
+      .from('meteo_cache')
+      .select('date')
+      .eq('date', today)
+      .maybeSingle()
 
-    const weatherResp = await fetch(url.toString())
-    if (!weatherResp.ok) throw new Error(`Open-Meteo: ${weatherResp.status}`)
-    const weatherData = await weatherResp.json()
+    if (!existing) {
+      const url = new URL(OPEN_METEO_URL)
+      url.searchParams.set('latitude',      String(coords.lat))
+      url.searchParams.set('longitude',     String(coords.lon))
+      url.searchParams.set('daily',         'temperature_2m_max,temperature_2m_min,precipitation_sum')
+      url.searchParams.set('past_days',     '30')
+      url.searchParams.set('forecast_days', '1')
+      url.searchParams.set('timezone',      'Europe/Paris')
 
-    // Upsert dans meteo_cache
-    const weatherRows = weatherData.daily.time.map((date: string, i: number) => ({
-      date,
-      temp_max:      weatherData.daily.temperature_2m_max[i]      ?? 0,
-      temp_min:      weatherData.daily.temperature_2m_min[i]      ?? 0,
-      precipitation: weatherData.daily.precipitation_sum[i]       ?? 0,
-    }))
-    await supabase.from('meteo_cache').upsert(weatherRows, { onConflict: 'date' })
+      const controller = new AbortController()
+      const timeoutId  = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
+
+      let weatherData: {
+        daily?: {
+          time?: string[]
+          temperature_2m_max?: number[]
+          temperature_2m_min?: number[]
+          precipitation_sum?: number[]
+        }
+      }
+      try {
+        const weatherResp = await fetch(url.toString(), { signal: controller.signal })
+        clearTimeout(timeoutId)
+        if (!weatherResp.ok) throw new Error(`Open-Meteo: ${weatherResp.status}`)
+        weatherData = await weatherResp.json()
+      } catch (fetchErr) {
+        clearTimeout(timeoutId)
+        throw fetchErr
+      }
+
+      if (!weatherData.daily?.time) {
+        throw new Error('Open-Meteo: réponse inattendue (daily.time absent)')
+      }
+
+      const weatherRows = weatherData.daily.time.map((date: string, i: number) => ({
+        date,
+        temp_max:      weatherData.daily!.temperature_2m_max![i]  ?? 0,
+        temp_min:      weatherData.daily!.temperature_2m_min![i]  ?? 0,
+        precipitation: weatherData.daily!.precipitation_sum![i]   ?? 0,
+      }))
+      await supabase.from('meteo_cache').upsert(weatherRows, { onConflict: 'date' })
+    }
 
     // Charger toutes les zones actives
     const { data: zones } = await supabase.from('zones').select('*').eq('active', true)
@@ -153,7 +183,7 @@ serve(async (req: Request) => {
     })
   } catch (err) {
     console.error('daily-weather-cron error:', err)
-    return new Response(JSON.stringify({ error: String(err) }), {
+    return new Response(JSON.stringify({ error: 'internal error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     })
