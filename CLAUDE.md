@@ -45,7 +45,7 @@ src/
 | `meteo_cache` | Cache journalier Open-Meteo | Technician |
 | `config` | Seuils, coordonnées GPS site | Manuel Supabase |
 
-RLS désactivé en prototypage (policies `allow_all_*`).
+RLS activé (migration 002_fix_rls.sql — 2026-05-22). Policies granulaires par opération : zones/config SELECT only, interventions SELECT+INSERT, alertes/meteo_cache SELECT+INSERT+UPDATE.
 
 ## Conventions
 
@@ -56,7 +56,7 @@ RLS désactivé en prototypage (policies `allow_all_*`).
 
 ## Build & deploy
 
-- `vite.config.js` : `base: '/camping-cottet-technician-app/'` → ⚠️ **à mettre à jour en `/camping-technician/`** avant prochain déploiement (repo renommé 2026-05-20)
+- `vite.config.js` : `base: '/camping-technician/'` (mis à jour 2026-05-20 après renommage repo)
 - Pas de workflow GitHub Actions encore (à ajouter)
 
 ## Scripts npm
@@ -70,4 +70,4 @@ dev / build / preview / lint / test / test:watch
 - Realtime subscription sur `alertes` → chaque mutation déclenche `loadData()` (peut être bruyant)
 - Coords GPS par défaut hardcodées (45.34, 4.65 — Châteauneuf-Isère) en fallback si config manquante
 - Layout figé portrait `max-width: 480px` — pas responsive desktop
-- RLS désactivé → ne pas pusher en prod publique sans verrouillage
+- RLS actif depuis 2026-05-22 — policies granulaires, app prête pour déploiement prod
