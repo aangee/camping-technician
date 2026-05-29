@@ -1,6 +1,6 @@
 import ZoneTile from './ZoneTile'
 
-export default function Dashboard({ zones, onNavigate, onRefresh, healthScore, alertCount, warningCount, okCount }) {
+export default function Dashboard({ zones, onNavigate, onRefresh, healthScore, alertCount, warningCount, okCount, thresholds }) {
   const alertZones   = zones.filter(z => z.alert?.level === 'alert')
   const warningZones = zones.filter(z => z.alert?.level === 'warning')
   const okZones      = zones.filter(z => !z.alert || z.alert.level === 'ok')
@@ -36,7 +36,7 @@ export default function Dashboard({ zones, onNavigate, onRefresh, healthScore, a
           </div>
           <div className="zone-grid" style={{ marginBottom: 20 }}>
             {alertZones.map(zone => (
-              <ZoneTile key={zone.id} zone={zone} onClick={() => onNavigate(zone.type, zone)} onRefresh={onRefresh} />
+              <ZoneTile key={zone.id} zone={zone} thresholds={thresholds} onClick={() => onNavigate(zone.type, zone)} onRefresh={onRefresh} />
             ))}
           </div>
         </>
@@ -49,7 +49,7 @@ export default function Dashboard({ zones, onNavigate, onRefresh, healthScore, a
           </div>
           <div className="zone-grid" style={{ marginBottom: 20 }}>
             {warningZones.map(zone => (
-              <ZoneTile key={zone.id} zone={zone} onClick={() => onNavigate(zone.type, zone)} onRefresh={onRefresh} />
+              <ZoneTile key={zone.id} zone={zone} thresholds={thresholds} onClick={() => onNavigate(zone.type, zone)} onRefresh={onRefresh} />
             ))}
           </div>
         </>
@@ -62,7 +62,7 @@ export default function Dashboard({ zones, onNavigate, onRefresh, healthScore, a
           </div>
           <div className="zone-grid">
             {okZones.map(zone => (
-              <ZoneTile key={zone.id} zone={zone} onClick={() => onNavigate(zone.type, zone)} onRefresh={onRefresh} />
+              <ZoneTile key={zone.id} zone={zone} thresholds={thresholds} onClick={() => onNavigate(zone.type, zone)} onRefresh={onRefresh} />
             ))}
           </div>
         </>

@@ -11,13 +11,13 @@ const ACTION_LABELS = {
   haies:   'Taillé aujourd\'hui',
 }
 
-const THRESHOLDS = {
+const THRESHOLDS_FALLBACK = {
   tonte:   { warning: 40,  alert: 60 },
   piscine: { warning: 20,  alert: 30 },
   haies:   { warning: 100, alert: 150 },
 }
 
-export default function ZoneTile({ zone, onClick, onRefresh }) {
+export default function ZoneTile({ zone, thresholds, onClick, onRefresh }) {
   const [showConfirm, setShowConfirm] = useState(false)
   const [notes, setNotes]             = useState('')
   const [saving, setSaving]           = useState(false)
@@ -25,8 +25,8 @@ export default function ZoneTile({ zone, onClick, onRefresh }) {
   const alert       = zone.alert ?? { level: 'ok', metric_value: 0 }
   const level       = alert.level ?? 'ok'
   const metricValue = alert.metric_value ?? 0
-  const thresholds  = THRESHOLDS[zone.type] ?? { warning: 50, alert: 100 }
-  const progressPct = Math.min(100, (metricValue / thresholds.alert) * 100)
+  const typeThresholds = (thresholds ?? THRESHOLDS_FALLBACK)[zone.type] ?? { warning: 50, alert: 100 }
+  const progressPct = Math.min(100, (metricValue / typeThresholds.alert) * 100)
 
   async function handleMarkDone(e) {
     e.stopPropagation()

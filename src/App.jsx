@@ -30,13 +30,17 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
 
+  const [config, setConfig] = useState({})
+
   const loadData = useCallback(async () => {
-    const [zonesRes, alertsRes] = await Promise.all([
+    const [zonesRes, alertsRes, configRes] = await Promise.all([
       supabase.from('zones').select('*').eq('active', true).order('type').order('name'),
       supabase.from('alertes').select('*'),
+      supabase.from('config').select('key, value'),
     ])
     setZones(zonesRes.data ?? [])
     setAlerts(alertsRes.data ?? [])
+    setConfig(Object.fromEntries((configRes.data ?? []).map(c => [c.key, c.value])))
     setLoading(false)
   }, [])
 
@@ -69,11 +73,18 @@ export default function App() {
     setSelectedZone(zone)
   }
 
+  const thresholds = {
+    tonte:   { warning: Number(config.tonte_threshold_warning ?? 40),  alert: Number(config.tonte_threshold_alert ?? 60) },
+    piscine: { warning: Number(config.piscine_threshold_warning ?? 20), alert: Number(config.piscine_threshold_alert ?? 30) },
+    haies:   { warning: Number(config.haies_threshold_warning ?? 100),  alert: Number(config.haies_threshold_alert ?? 150) },
+  }
+
   const sharedProps = {
     zones: zonesWithAlerts,
     onNavigate: navigateTo,
     onRefresh: handleRefresh,
     refreshKey,
+    thresholds,
   }
 
   if (loading) {
