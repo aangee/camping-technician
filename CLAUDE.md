@@ -47,6 +47,11 @@ src/
 
 RLS activé (migration 002_fix_rls.sql — 2026-05-22). Policies granulaires par opération : zones/config SELECT only, interventions SELECT+INSERT, alertes/meteo_cache SELECT+INSERT+UPDATE.
 
+**Supabase project_id :** `abzrgubpdlvwdzwotcdi` (MCP tool `execute_sql` + requêtes admin — bypasse RLS)
+**URL :** `https://abzrgubpdlvwdzwotcdi.supabase.co`
+
+⚠ La clé anon ne peut pas DELETE sur `zones` (RLS 002 l'interdit volontairement). Pour les ops de maintenance sur `zones` → utiliser le MCP Supabase (`execute_sql` avec project_id ci-dessus) ou le SQL Editor Supabase.
+
 ## Conventions
 
 - **State** : `useState` + `useCallback`, Realtime subscription Supabase sur `alertes`
