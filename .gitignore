@@ -10,3 +10,6 @@ npm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Supabase CLI artefacts
+supabase/.temp/
