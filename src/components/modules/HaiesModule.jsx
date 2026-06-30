@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase'
 import { fetchWeather } from '../../lib/openmeteo'
 import { calculateDegreeDays } from '../../lib/degreeDays'
 
-const DEFAULT_COORDS = { lat: 45.92, lon: 5.90 }
+const DEFAULT_COORDS = { lat: 45.34, lon: 4.65 }
 
 export default function HaiesModule({ zones, onRefresh, refreshKey }) {
   const [weather, setWeather]             = useState([])

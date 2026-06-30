@@ -5,6 +5,7 @@ import TonteModule from './components/modules/TonteModule'
 import PiscineModule from './components/modules/PiscineModule'
 import HaiesModule from './components/modules/HaiesModule'
 import HistoryView from './components/HistoryView'
+import PlanView3D from './components/PlanView3D'
 
 const NAV_ITEMS = [
   { id: 'dashboard', icon: '🏕️', label: 'Accueil' },
@@ -29,6 +30,7 @@ export default function App() {
   const [alerts, setAlerts] = useState([])
   const [loading, setLoading] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
+  const [showPlan3D, setShowPlan3D] = useState(false)
 
   const [config, setConfig] = useState({})
 
@@ -85,6 +87,7 @@ export default function App() {
     onRefresh: handleRefresh,
     refreshKey,
     thresholds,
+    onShowPlan3D: () => setShowPlan3D(true),
   }
 
   if (loading) {
@@ -97,6 +100,13 @@ export default function App() {
 
   return (
     <>
+      {showPlan3D && (
+        <PlanView3D
+          zones={zonesWithAlerts}
+          onNavigate={navigateTo}
+          onClose={() => setShowPlan3D(false)}
+        />
+      )}
       <header className="header">
         <div>
           <div className="header-title">{VIEW_TITLES[view]}</div>

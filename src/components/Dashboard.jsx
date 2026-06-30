@@ -1,6 +1,6 @@
 import ZoneTile from './ZoneTile'
 
-export default function Dashboard({ zones, onNavigate, onRefresh, healthScore, alertCount, warningCount, okCount, thresholds }) {
+export default function Dashboard({ zones, onNavigate, onRefresh, healthScore, alertCount, warningCount, okCount, thresholds, onShowPlan3D }) {
   const alertZones   = zones.filter(z => z.alert?.level === 'alert')
   const warningZones = zones.filter(z => z.alert?.level === 'warning')
   const okZones      = zones.filter(z => !z.alert || z.alert.level === 'ok')
@@ -12,6 +12,19 @@ export default function Dashboard({ zones, onNavigate, onRefresh, healthScore, a
       <div className="health-score">
         <div className="health-score-value" style={{ color: scoreColor }}>{healthScore}%</div>
         <div className="health-score-label">Score santé global</div>
+        {onShowPlan3D && (
+          <button
+            onClick={onShowPlan3D}
+            style={{
+              marginTop: 12, padding: '8px 18px', border: 'none',
+              borderRadius: 8, background: 'var(--surface-2, #1e293b)',
+              color: 'var(--text, #f1f5f9)', fontSize: 13, fontWeight: 600,
+              cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6,
+            }}
+          >
+            🗺️ Vue 3D
+          </button>
+        )}
       </div>
 
       <div className="stats-row">
