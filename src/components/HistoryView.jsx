@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
+import { ZONE_ENTRETIEN_COLORS } from '@aangee/cottet-plan-lib/constants'
 import { supabase } from '../lib/supabase'
 
 const TYPE_ICONS  = { tonte: '🌿', piscine: '🏊', haies: '🌳' }
-const TYPE_LABELS = { tonte: 'Tonte', piscine: 'Piscine', haies: 'Haies' }
-const TYPE_COLORS = { tonte: 'var(--orange)', piscine: 'var(--blue)', haies: 'var(--green)' }
+// Mapping cssVar local (hors scope plan-lib pour éviter couplage app UI)
+const TYPE_CSSVAR = { tonte: 'var(--orange)', piscine: 'var(--blue)', haies: 'var(--green)' }
+const TYPE_LABELS = Object.fromEntries(Object.entries(ZONE_ENTRETIEN_COLORS).map(([k, v]) => [k, v.label]))
+const TYPE_COLORS = TYPE_CSSVAR  // alias pour minimiser diff
 
 export default function HistoryView({ zones }) {
   const [interventions, setInterventions] = useState([])

@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import { ZONE_ENTRETIEN_COLORS } from '@aangee/cottet-plan-lib/constants'
 import { supabase } from '../lib/supabase'
 
-const TYPE_LABELS = { tonte: 'Tonte', piscine: 'Piscine', haies: 'Haies' }
+const TYPE_LABELS = Object.fromEntries(Object.entries(ZONE_ENTRETIEN_COLORS).map(([k, v]) => [k, v.label]))
 const TYPE_ICONS  = { tonte: '🌿',   piscine: '🏊',      haies: '🌳' }
 const METRIC_UNIT = { tonte: '°J',   piscine: 'mm (7j)', haies: '°J' }
 

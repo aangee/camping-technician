@@ -12,6 +12,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@aangee/cottet-plan-lib": "^0.4.0",
+    "@aangee/cottet-schema": "^0.4.0",
     "@supabase/supabase-js": "^2.47.10",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
