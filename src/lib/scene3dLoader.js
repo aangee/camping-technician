@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { TREE_COLORS as PLAN_TREE_COLORS } from '@aangee/cottet-plan-lib/constants'
 
 // Converts admin-baked world coords (180x150m scale) → app-technician world units (SCALE=1/200)
 // baked_x = (svgX - 1280) * (180/2560)  →  atX = (svgX - 1280) / 200  →  atX = baked_x / 14.0625
@@ -7,7 +8,7 @@ function toAtX(bx) { return bx / 14.0625 }
 function toAtZ(bz) { return -bz / 19.144 }
 function toAtH(bh) { return bh / 14.0625 }
 
-const TREE_COLORS = { pin: 0x15803d, cerisier: 0xf43f5e, feuillu: 0x65a30d }
+const TREE_COLORS = Object.fromEntries(Object.entries(PLAN_TREE_COLORS).map(([k, v]) => [k, v.int]))
 
 function makeTreeGeom(subtype) {
   if (subtype === 'pin')      return new THREE.ConeGeometry(0.04, 0.18, 6)
