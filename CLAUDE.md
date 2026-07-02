@@ -62,7 +62,24 @@ RLS activé (migration 002_fix_rls.sql — 2026-05-22). Policies granulaires par
 ## Build & deploy
 
 - `vite.config.js` : `base: '/camping-technician/'` (mis à jour 2026-05-20 après renommage repo)
-- Pas de workflow GitHub Actions encore (à ajouter)
+- Pas de workflow deploy GitHub Actions encore (à ajouter)
+- Workflow `.github/workflows/supabase-keepalive.yml` — ping `/auth/v1/health` tous les 5 jours pour empêcher pause free tier (7j). Déclenchable manuellement via `gh workflow run supabase-keepalive.yml`.
+
+## Rotation clé anon Supabase
+
+Trois endroits à synchroniser lors d'une rotation :
+
+1. Générer nouvelle anon key sur `dashboard.supabase.com` → Settings → API
+2. Mettre à jour `.env` local (`VITE_SUPABASE_ANON_KEY`) — pour dev + prochain build
+3. Mettre à jour le secret CI (utilisé par le workflow keepalive) :
+   ```bash
+   grep '^VITE_SUPABASE_ANON_KEY=' .env | cut -d= -f2- | \
+     gh secret set SUPABASE_ANON_KEY --repo aangee/camping-technician
+   ```
+4. Rebuild + redeploy viewer + technician (l'anon key est inlinée dans le bundle Vite via `VITE_` → nouveau build nécessaire pour propager)
+5. En cas de compromission avérée : `Supabase → Auth → invalidate all sessions`
+
+Le même `.env` sert aussi à `app-viewer` s'il utilise Supabase — vérifier avant de considérer la rotation terminée.
 
 ## Scripts npm
 
