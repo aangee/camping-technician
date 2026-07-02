@@ -20,8 +20,7 @@ jobs:
           fi
           status=$(curl -sS -o /tmp/resp.json -w "%{http_code}" \
             -H "apikey: $SUPABASE_ANON_KEY" \
-            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
-            "$SUPABASE_URL/rest/v1/")
+            "$SUPABASE_URL/auth/v1/health")
           echo "HTTP $status"
           head -c 200 /tmp/resp.json; echo
           if [ "$status" != "200" ]; then
