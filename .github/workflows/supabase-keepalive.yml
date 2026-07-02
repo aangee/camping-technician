@@ -21,9 +21,9 @@ jobs:
           status=$(curl -sS -o /tmp/resp.json -w "%{http_code}" \
             -H "apikey: $SUPABASE_ANON_KEY" \
             -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
-            "$SUPABASE_URL/rest/v1/zones?select=id&limit=1")
+            "$SUPABASE_URL/rest/v1/")
           echo "HTTP $status"
-          cat /tmp/resp.json
+          head -c 200 /tmp/resp.json; echo
           if [ "$status" != "200" ]; then
             echo "::error::Unexpected status $status"
             exit 1
