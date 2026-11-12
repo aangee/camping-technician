@@ -37,6 +37,13 @@ src/
 
 ## Tables Supabase
 
+> ⚠ **CES DONNÉES SONT DES DONNÉES DE TEST — rien n'est en production.** Décision
+> d'aangee, 2026-11-12 : personne n'utilise cette base, ni lui ni le personnel. La base
+> peut être vidée, supprimée ou restructurée **sans précaution** — rien à préserver, rien
+> à sauvegarder avant. Le tableau ci-dessous et les règles RLS décrivent l'architecture
+> (qui écrit quoi, pour que l'app reste cohérente), **pas une obligation de préservation**.
+> Détail : `supabase/README.md`.
+
 | Table | Rôle | Écrit par |
 |-------|------|-----------|
 | `zones` | Définition spatiale zones entretien | Studio admin (seed) |
@@ -63,7 +70,13 @@ RLS activé (migration 002_fix_rls.sql — 2026-05-22). Policies granulaires par
 
 - `vite.config.js` : `base: '/camping-technician/'` (mis à jour 2026-05-20 après renommage repo)
 - Pas de workflow deploy GitHub Actions encore (à ajouter)
-- Workflow `.github/workflows/supabase-keepalive.yml` — ping `/auth/v1/health` tous les 5 jours pour empêcher pause free tier (7j). Déclenchable manuellement via `gh workflow run supabase-keepalive.yml`.
+- **Aucun workflow GitHub Actions** dans ce dépôt. `supabase-keepalive.yml` a été **retiré
+  le 2026-11-12** : il pingait `/auth/v1/health` tous les 5 jours pour empêcher la mise en
+  pause du free tier (7 j) — or les données de cette base sont des données de test, donc
+  une mise en pause ne coûte rien. Si la base redevient utile un jour, le workflow est
+  récupérable dans l'historique git (`git log -- .github/workflows/supabase-keepalive.yml`),
+  et il faudra aussi vérifier que les secrets `SUPABASE_URL` et `SUPABASE_ANON_KEY` sont
+  encore posés sur le dépôt.
 
 ## Rotation clé anon Supabase
 

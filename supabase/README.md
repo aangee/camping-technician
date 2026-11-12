@@ -1,5 +1,25 @@
 # Supabase — Matrice writer/reader (app-technician)
 
+> ## ⚠ CES DONNÉES SONT DES DONNÉES DE TEST — rien ici n'est en production
+>
+> **Décision d'aangee, 2026-11-12.** Personne n'utilise cette base aujourd'hui : ni lui, ni
+> le personnel du camping. Toutes les lignes qu'elle contient ont été saisies pour essayer
+> l'application.
+>
+> **Conséquence : la base peut être vidée, supprimée, recréée ou restructurée sans
+> précaution particulière.** Il n'y a aucune donnée à préserver, aucune sauvegarde à faire
+> avant, et personne à prévenir.
+>
+> ⚠ **Les « invariants » et la matrice ci-dessous décrivent l'ARCHITECTURE, pas une
+> obligation de préservation.** Ils disent qui écrit quoi pour que l'application reste
+> cohérente — pas que les données sont précieuses. Ne pas les lire comme un interdit de
+> toucher à la base.
+>
+> *Pourquoi cet encadré existe : au 2026-11-12, ce fichier annonçait des « invariants à ne
+> jamais briser » et le `CLAUDE.md` interdisait d'écrire dans `zones` — ce qui laissait
+> croire à des données de production. Une session repartie à froid aurait pris des
+> précautions coûteuses pour rien, et aurait pu refuser une restructuration nécessaire.*
+
 ## Tables et accès
 
 | Table | Lecteurs | Écrivains | Notes |
